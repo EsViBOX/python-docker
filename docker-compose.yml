@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  database:
+    container_name: app-db
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?REQUIRED}
+      MYSQL_DATABASE: sample
+      MYSQL_USER: sample
+      MYSQL_PASSWORD: Rut3.sample
+    volumes:
+      - db_data:/var/lib/mysql
+      - db_conf:/etc/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - common-networks
+    healthcheck:
+      test: [ 'CMD', 'mysqladmin', 'ping', '-u', 'sample', '-pRut3.sample' ]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+
+  web:
+    container_name: app-web
+    build:
+      context: .
+    ports:
+      - 8000:5000
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    networks:
+      - common-networks
+
+volumes:
+  db_data:
+  db_conf:
+
+networks:
+  common-networks: {}
