@@ -1,3 +1,4 @@
 # python-docker
 Sample Python Docker
-Rename .env.sample to .env
+
+ Rename .env.sample to .env
